@@ -1,6 +1,7 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import ListBooks from './ListBooks'
+import { Route } from 'react-router-dom'
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -12,7 +13,7 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    booksByCategory: []
+    books: []
   }
   componentDidMount(){
     let booksByCategory = []
@@ -26,13 +27,21 @@ class BooksApp extends React.Component {
           booksByCategory[book.shelf].push(book)
         }
       })
-      this.setState({booksByCategory})
+      this.setState({books: booksByCategory})
     })
   }
   render() {
+    const { currentlyReading, wantToRead, read } = this.state.books
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
+        <Route exact path='/' render={() => (
+          <div>
+            <ListBooks category="currentlyReading" books={currentlyReading} />
+            <ListBooks category="wantToRead" books={wantToRead} />
+            <ListBooks category="read" books={read} />
+          </div>
+        )} />
+        <Route path='/search' render={({ history }) => (
           <div className="search-books">
             <div className="search-books-bar">
               <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
@@ -53,14 +62,7 @@ class BooksApp extends React.Component {
               <ol className="books-grid"></ol>
             </div>
           </div>
-        ) : (
-          <div>
-            <ListBooks books={this.state.booksByCategory['currentlyReading']} />
-            {console.log('Is this an array wr' + Array.isArray(this.state.booksByCategory['wantToRead']))}
-            <ListBooks books={this.state.booksByCategory['wantToRead']} />
-            <ListBooks books={this.state.booksByCategory['read']} />
-          </div>
-        )}22
+        )} />
       </div>
     )
   }
