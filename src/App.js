@@ -2,7 +2,7 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import BookShelf from './BookShelf'
 import SearchBooks from './SearchBooks'
-import { Route } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -11,10 +11,10 @@ class BooksApp extends React.Component {
     books: []
   }
 
-  updateBookShelf = (book, shelf) => {
-    book.shelf = shelf
+  updateBookShelf = (bookToUpdate, newShelf) => {
+    bookToUpdate.shelf = newShelf
     this.setState( state => ({
-      books: state.books.filter( b => b.id !== book.id).concat([book])
+      books: state.books.filter( b => b.id !== bookToUpdate.id).concat([bookToUpdate])
     }))
   }
 
@@ -60,6 +60,9 @@ class BooksApp extends React.Component {
                   onChangeShelf={this.updateBookShelf}
                 />
               </div>
+            </div>
+            <div className="open-search">
+              <Link to="/search">Add a book</Link>
             </div>
           </div>
         )} />

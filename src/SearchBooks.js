@@ -14,6 +14,20 @@ class SearchBooks extends Component {
     books: []
 
   }
+  updateSearchShelf = (bookToMove, newShelf) => {
+    let books = this.state.books || [] //books should be search results
+    books.forEach(book => {
+      if (book.id === bookToMove.id) {
+        bookToMove.shelf = newShelf
+        book = bookToMove
+      }
+    });
+
+    this.setState({ books })
+    if(this.props.onChangeShelf){
+      this.props.onChangeShelf(bookToMove, newShelf)
+    }
+  }
   updateQuery = query => {
     if(query){
       this.setState({query})
@@ -31,8 +45,7 @@ class SearchBooks extends Component {
       this.props.myBooks.forEach( myBook => {
         myBookShelf[myBook.id] = myBook
       })
-      console.log('MyBooks' + JSON.stringify(myBookShelf))
-      books.map( book => {
+      books = books.map( book => {
         if(myBookShelf[book.id]){
           return myBookShelf[book.id]
         } else {
@@ -70,7 +83,7 @@ class SearchBooks extends Component {
           <ol className="books-grid">
             {books.map(book =>
               <li key={book.id}>
-                <Book book={book} moveToShelf={this.props.onChangeShelf}/>
+                <Book book={book} moveToShelf={this.updateSearchShelf}/>
               </li>
             )}
           </ol>
